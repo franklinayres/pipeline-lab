@@ -1,4 +1,4 @@
 #!/bin/bash
-echo "Starting simulated deployment..."
-echo "Deploying application version: $1"
+echo "Starting deployment to environment: $1"
+echo "Using image: $2"
 echo "Deployment completed successfully."

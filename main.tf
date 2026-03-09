@@ -11,5 +11,5 @@ provider "local" {}
 
 resource "local_file" "example" {
   filename = "${path.module}/iac-output.txt"
-  content  = "Infrastructure as Code test successful."
+  content  = "Infrastructure as Code level 4 validation successful."
 }
