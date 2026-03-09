@@ -127,7 +127,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Trivy config + secret scan
+      - name: Install Trivy manually
+        uses: aquasecurity/setup-trivy@v0.2.0
+        with:
+          cache: true
+          version: v0.69.3
+
+      - name: Run Trivy config + secret scan
         uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: 'fs'
@@ -136,6 +142,7 @@ jobs:
           format: 'table'
           exit-code: '1'
           severity: 'HIGH,CRITICAL'
+          skip-setup-trivy: true
 
   terraform-plan:
     runs-on: ubuntu-latest
