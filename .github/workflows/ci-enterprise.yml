@@ -134,9 +134,6 @@ jobs:
 
       - name: Run Trivy config + secret scan
         uses: aquasecurity/trivy-action@0.33.1
-        env:
-          TRIVY_SKIP_DB_UPDATE: true
-          TRIVY_SKIP_JAVA_DB_UPDATE: true
         with:
           scan-type: fs
           scan-ref: .
@@ -210,9 +207,6 @@ jobs:
 
       - name: Trivy image scan
         uses: aquasecurity/trivy-action@0.33.1
-        env:
-          TRIVY_SKIP_DB_UPDATE: true
-          TRIVY_SKIP_JAVA_DB_UPDATE: true
         with:
           image-ref: ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.image_tag }}
           format: table
