@@ -199,6 +199,12 @@ jobs:
           docker build -t $IMAGE_NAME:${{ steps.meta.outputs.image_tag }} .
           docker tag $IMAGE_NAME:${{ steps.meta.outputs.image_tag }} $IMAGE_NAME:latest
 
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@v0.2.5
+        with:
+          cache: true
+          version: v0.69.3
+
       - name: Trivy image scan
         uses: aquasecurity/trivy-action@0.33.1
         with:
@@ -206,6 +212,7 @@ jobs:
           format: table
           exit-code: 1
           severity: HIGH,CRITICAL
+          skip-setup-trivy: true
 
       - name: Push image
         if: github.ref == 'refs/heads/main'
