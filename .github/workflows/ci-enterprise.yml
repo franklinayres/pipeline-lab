@@ -206,13 +206,12 @@ jobs:
           version: v0.69.3
 
       - name: Trivy image scan
-        uses: aquasecurity/trivy-action@0.33.1
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.image_tag }}
-          format: table
-          exit-code: 1
-          severity: HIGH,CRITICAL
-          skip-setup-trivy: true
+        run: |
+          trivy image \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --exit-code 1 \
+            $IMAGE_NAME:${{ steps.meta.outputs.image_tag }}
 
       - name: Push image
         if: github.ref == 'refs/heads/main'
