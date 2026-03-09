@@ -1,22 +1,15 @@
 terraform {
   required_providers {
-    docker = {
-      source  = "kreuzwerker/docker"
-      version = "~> 3.0"
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.5"
     }
   }
 }
 
-provider "docker" {}
+provider "local" {}
 
-resource "docker_image" "app" {
-  name = "pipeline-lab:latest"
-  build {
-    path = "."
-  }
-}
-
-resource "docker_container" "app_container" {
-  image = docker_image.app.image_id
-  name  = "pipeline_lab_container"
+resource "local_file" "example" {
+  filename = "${path.module}/iac-output.txt"
+  content  = "Infrastructure as Code test successful."
 }
