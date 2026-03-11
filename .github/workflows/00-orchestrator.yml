@@ -31,6 +31,9 @@ jobs:
 
   build_publish:
     needs: security
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/04-build-publish.yml
     secrets: inherit
 
