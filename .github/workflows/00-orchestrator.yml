@@ -18,6 +18,9 @@ jobs:
 
   security:
     needs: quality
+    permissions:
+      contents: read
+      pull-requests: write
     uses: ./.github/workflows/02-security.yml
     secrets: inherit
 
