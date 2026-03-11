@@ -1,0 +1,48 @@
+name: 00 - Orchestrator
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pipeline-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    uses: ./.github/workflows/01-quality.yml
+    secrets: inherit
+
+  security:
+    needs: quality
+    uses: ./.github/workflows/02-security.yml
+    secrets: inherit
+
+  infra:
+    needs: security
+    uses: ./.github/workflows/03-infra.yml
+    secrets: inherit
+
+  build_publish:
+    needs: security
+    uses: ./.github/workflows/04-build-publish.yml
+    secrets: inherit
+
+  deploy_dev:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [infra, build_publish]
+    uses: ./.github/workflows/05-deploy-dev.yml
+    with:
+      image_ref: ${{ needs.build_publish.outputs.image_ref }}
+    secrets: inherit
+
+  deploy_prod:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: deploy_dev
+    uses: ./.github/workflows/06-deploy-prod.yml
+    with:
+      image_ref: ${{ needs.build_publish.outputs.image_ref }}
+    secrets: inherit

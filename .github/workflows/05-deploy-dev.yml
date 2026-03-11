@@ -1,0 +1,32 @@
+name: 05 - Deploy Dev
+
+on:
+  workflow_call:
+    inputs:
+      image_ref:
+        required: true
+        type: string
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment:
+      name: dev
+    concurrency:
+      group: deploy-dev
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Terraform plan
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-plan
+
+      - name: Simulated deploy to dev
+        run: ./deploy.sh dev "${{ inputs.image_ref }}"
+
+      - name: Smoke test
+        run: echo "Running smoke tests in dev..."

@@ -1,0 +1,29 @@
+name: 06 - Deploy Prod
+
+on:
+  workflow_call:
+    inputs:
+      image_ref:
+        required: true
+        type: string
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    environment:
+      name: prod
+    concurrency:
+      group: deploy-prod
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Terraform plan
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-plan
+
+      - name: Simulated deploy to prod
+        run: ./deploy.sh prod "${{ inputs.image_ref }}"
