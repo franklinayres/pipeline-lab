@@ -11,10 +11,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      - name: Install Terraform
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
+          curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/1.14.6/terraform_1.14.6_linux_amd64.zip
+          unzip -o terraform.zip
+          sudo mv terraform /usr/local/bin/terraform
+          terraform version
 
       - name: Terraform fmt check
         run: terraform fmt -check -recursive
@@ -29,7 +35,7 @@ jobs:
         run: terraform plan -out=tfplan
 
       - name: Upload Terraform plan
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: terraform-plan
           path: tfplan
